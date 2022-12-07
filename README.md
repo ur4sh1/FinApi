@@ -14,7 +14,7 @@ Exercício de Node.js
 [x] Deve ser possível atualizar dados da conta do cliente<br>
 [x] Deve ser possível obter dados da conta do cliente<br>
 [x] Deve ser possível deletar uma conta<br>
-[x] Deve ser possivel retornar o balance<br>
+[x] Deve ser possível retornar o balance<br>
 
 ## :books: Regras de negócio
 
