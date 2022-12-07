@@ -8,17 +8,15 @@ app.use(express.json());
 const customers = [];
 
 //Middleware
-function verifyIfExistsAccountCPF( request, response, next) {
-
+function verifyIfExistsAccountCPF(request, response, next) {
   const { cpf } =  request.headers;
-  const customer =  customers.find(customer => customer.cpf === cpf);
+  const customer =  customers.find((customer) => customer.cpf === cpf);
 
   if(!customer){
-    return response.status(400).json({error: "Customer not found!"})
+    return response.status(400).json({error: "Customer not found!"});
   }
 
   request.customer = customer;
-
   return next();
 }
 
@@ -33,7 +31,9 @@ function getBalance(statement) {
 
   return balance;
 }
+//Middleware
 
+//EndPoints
 app.post("/account", (request, response)=>{
   const {cpf, name} = request.body;
   const customerAlreadyExists = customers.some((customer)=> customer.cpf === cpf);
@@ -49,16 +49,14 @@ app.post("/account", (request, response)=>{
     name,
     id: uuidv4(),
     statement: []
-  })
+  });
 
-  return response.status(201).send();
+  return response.status(201).send({msg: "Created Customer!", customers});
 });
-
-//app.use(verifyIfExistsAccountCPF);
 
 app.get("/statement",verifyIfExistsAccountCPF, (request, response)=>{
   const { customer } = request;
-  return response.json(customer.statement);
+  return response.json({customer});
 });
 
 app.post("/deposit",verifyIfExistsAccountCPF, (request, response)=>{
@@ -69,33 +67,32 @@ app.post("/deposit",verifyIfExistsAccountCPF, (request, response)=>{
     description,
     amount,
     created_at: new Date(),
-    type: "credt"
+    type: "credit"
   }
   
   customer.statement.push(statementOperation);
 
-  return response.status(201).send({msg: "sucessfuly!"});
+  return response.status(201).send({msg: "Deposit sucessfuly!"});
 });
 
 app.post("/withdraw",verifyIfExistsAccountCPF, (request, response)=>{
   const { amount } = request.body;
   const { customer } = request;
-
   const balance = getBalance(customer.statement);
 
   if(balance < amount){
-    return response.status(400).send({error: "Insufficient funds!"})
+    return response.status(400).json({error: "Insufficient funds!"})
   }
 
   const statementOperation = {
     amount,
     created_at: new Date(),
-    type: "debit"
+    type: "debit",
   };
 
   customer.statement.push(statementOperation);
 
-  return response.status(201).send();
-})
+  return response.status(201).send({ total: balance});
+});
 
 app.listen(3330);
