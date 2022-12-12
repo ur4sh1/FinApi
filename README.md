@@ -1,5 +1,5 @@
 # Exercício de Node.js
-<h1 align="center">:file_cabinet: Mobile - FinApi - Api Financeira</h1>
+<h1 align="center">:file_cabinet: FinApi - Api Financeira</h1>
 
 ## :memo: Descrição
 Exercício de Node.js
